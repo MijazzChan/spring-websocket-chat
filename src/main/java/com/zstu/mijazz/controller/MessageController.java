@@ -2,8 +2,11 @@ package com.zstu.mijazz.controller;
 
 import com.zstu.mijazz.model.MessageFrom;
 import com.zstu.mijazz.model.MessageTO;
+import com.zstu.mijazz.model.UserVO;
+import com.zstu.mijazz.robots.CallRobotExternalApi;
 import com.zstu.mijazz.storage.UserStorage;
 import io.swagger.annotations.Api;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +29,36 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    private CallRobotExternalApi callRobotExternalApi;
+
     @MessageMapping("/chat/{to}")
     public void sendMessage(@DestinationVariable String to, MessageFrom from) {
+        if ("ROBOT".equals(to)){
+            robotSendMessage(from);
+            return;
+        }
         logger.info("Handling imcoming message {} -> {}", from.getUserName() , to);
         boolean isExists = UserStorage.getInstance().isDuplicateUser(to);
         if (isExists) {
             logger.info("Successfully deliver message -> {}", to);
             simpMessagingTemplate.convertAndSend("/topic/messages/" + to, new MessageTO(from));
+        }else {
+            logger.warn("Destination username {} not exist/online, check username", to);
         }
+        return;
     }
 
     @MessageMapping("/chat/GROUP")
     public void sendGroupMessage(MessageFrom from) {
         logger.info("Handling incoming group message {} -> GROUP", from.getUserName());
         simpMessagingTemplate.convertAndSend("/topic/messages/GROUP", new MessageTO(from));
+        return;
+    }
+
+    public void robotSendMessage(MessageFrom from) {
+        String robotReply = callRobotExternalApi.getRobotReply(from.getMsgContent());
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + from.getUserName(), MessageTO.getRobotMessageTO(robotReply));
+        return;
     }
 }

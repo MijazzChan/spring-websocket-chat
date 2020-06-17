@@ -15,6 +15,7 @@ public class UserStorage {
     private UserStorage() {
         userVOMap = new ConcurrentHashMap<>(32);
         userVOMap.put("GROUP", UserVO.getAnonymousInstance());
+        userVOMap.put("ROBOT", UserVO.getRobotInstance());
     }
 
     public static synchronized UserStorage getInstance() {

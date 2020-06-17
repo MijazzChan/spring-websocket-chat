@@ -16,4 +16,9 @@ public class TempController {
     public String help() {
         return "redirect:/swagger-ui.html";
     }
+
+    @GetMapping("/restart")
+    public void restart() {
+        System.exit(0);
+    }
 }

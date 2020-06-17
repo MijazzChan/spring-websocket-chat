@@ -38,4 +38,8 @@ public class UserVO {
     public static UserVO getAnonymousInstance() {
         return new UserVO("UNKNOWN_USER", 1, "0.0.0.0", "1");
     }
+
+    public static UserVO getRobotInstance(){
+        return new UserVO("ROBOT", 0, "0.0.0.0", "0");
+    }
 }

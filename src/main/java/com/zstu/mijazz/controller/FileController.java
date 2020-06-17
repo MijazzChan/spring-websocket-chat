@@ -36,13 +36,12 @@ public class FileController {
     @Autowired
     private FileStorage fileStorage;
 
-    @ApiOperation(value = "文件上传", notes = "表单形式post文件, 最大100MB, 再开发可修改", produces = "application/json")
-    @ApiImplicitParam(name = "file", required = true)
+    @ApiOperation(value = "文件上传", notes = "表单形式post文件, 最大100MB, 再开发可修改")
     @ApiResponses({
             @ApiResponse(code = 1, message = "成功且+文件UUID后下载位置"),
             @ApiResponse(code = 0, message = "文件有非法或服务器储存权限出错")
     })
-    @PostMapping(value = "/uploadfile", produces = "application/json")
+    @PostMapping(value = "/uploadfile")
     public ResponseModel<UploadFileResponseModel> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorage.storeFile(file);
         if (StringUtils.isEmpty(fileName)) {

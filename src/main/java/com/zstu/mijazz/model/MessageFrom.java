@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class MessageFrom implements Serializable {
     private String userName;
 
-    private String msgType;
+    private String msgType; //2
 
     private String msgContent;
 }

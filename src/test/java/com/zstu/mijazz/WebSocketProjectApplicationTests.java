@@ -1,5 +1,6 @@
 package com.zstu.mijazz;
 
+import com.zstu.mijazz.robots.CallRobotExternalApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,8 +14,8 @@ class WebSocketProjectApplicationTests {
     }
 
     @Test
-    void testDate() {
-        System.out.println(LocalDateTime.now());
+    void testRobot() {
+        System.out.println(new CallRobotExternalApi().getRobotReply("你是谁"));
     }
 
 }

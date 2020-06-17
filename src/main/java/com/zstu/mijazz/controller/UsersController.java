@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Api(description = "用户接口")
 @RestController
-@CrossOrigin
+@CrossOrigin()
 public class UsersController {
 
     private static Logger logger = LoggerFactory.getLogger(UsersController.class);
@@ -92,4 +92,7 @@ public class UsersController {
             return new ResponseModel<>(0, "Unexpected Failure");
         }
     }
+
+
+
 }

@@ -39,4 +39,13 @@ public class MessageTO implements Serializable {
         this.msgTimeStamp = LocalDateTime.now();
     }
 
+    public static MessageTO getRobotMessageTO(String msgContent) {
+        MessageTO messageTO = new MessageTO();
+        messageTO.setMsgType("0");
+        messageTO.setMsgContent(msgContent);
+        messageTO.setUserVO(UserVO.getRobotInstance());
+        messageTO.setMsgTimeStamp(LocalDateTime.now());
+        return messageTO;
+    }
+
 }
