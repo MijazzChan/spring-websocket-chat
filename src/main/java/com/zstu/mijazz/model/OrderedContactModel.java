@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 public class OrderedContactModel {
-    private ConcurrentHashMap<String, List<String>> contactMap;
+    private TreeMap<String, List<String>> contactMap;
 
     public OrderedContactModel() {
-        this.contactMap = new ConcurrentHashMap<String, List<String>>(32);
+        this.contactMap = new TreeMap<String, List<String>>();
         Set<String> nameSet = UserStorage.getInstance().getUsers();
         for (String name : nameSet) {
             String firstPinyin = PinYinUtil.getHeadPinYin(name);
@@ -28,6 +28,9 @@ public class OrderedContactModel {
             } else {
                 contactMap.get(firstPinyin).add(name);
             }
+        }
+        for (List<String> nameList : contactMap.values()) {
+            Collections.sort(nameList);
         }
     }
 }

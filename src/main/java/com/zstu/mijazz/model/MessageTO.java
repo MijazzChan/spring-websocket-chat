@@ -2,6 +2,7 @@ package com.zstu.mijazz.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zstu.mijazz.storage.UserStorage;
+import com.zstu.mijazz.utils.SensitiveFilter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,14 +29,18 @@ public class MessageTO implements Serializable {
 
     private LocalDateTime msgTimeStamp;
 
-    public MessageTO(MessageFrom messageFrom) {
+    public MessageTO(MessageFrom messageFrom, boolean isFilterEnable) {
         this.userVO = null;
         this.userVO = UserStorage.getInstance().getUser(messageFrom.getUserName());
         if (this.userVO == null) {
             this.userVO = UserVO.getAnonymousInstance();
         }
         this.msgType = messageFrom.getMsgType();
-        this.msgContent = messageFrom.getMsgContent();
+        if (isFilterEnable && "1".equals(msgType)) {
+            this.msgContent = SensitiveFilter.DEFAULT.filter(messageFrom.getMsgContent(), '*');
+        }else {
+            this.msgContent = messageFrom.getMsgContent();
+        }
         this.msgTimeStamp = LocalDateTime.now();
     }
 
