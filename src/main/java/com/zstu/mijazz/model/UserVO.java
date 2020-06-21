@@ -17,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserVO implements Serializable {
+public class UserVO implements Serializable, Comparable {
     private String userName;
 
     private Integer userSex;
@@ -42,5 +42,13 @@ public class UserVO implements Serializable {
 
     public static UserVO getRobotInstance(){
         return new UserVO("ROBOT", 0, "0.0.0.0", "0");
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof UserVO) {
+            return this.userName.compareTo(((UserVO) o).userName);
+        }
+        return 0;
     }
 }
