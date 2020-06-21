@@ -14,19 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 public class OrderedContactModel {
-    private ConcurrentHashMap<String, List<String>> contactMap;
+    private ConcurrentHashMap<String, List<UserVO>> contactMap;
 
     public OrderedContactModel() {
-        this.contactMap = new ConcurrentHashMap<String, List<String>>(32);
+        this.contactMap = new ConcurrentHashMap<String, List<UserVO>>(32);
         Set<String> nameSet = UserStorage.getInstance().getUsers();
         for (String name : nameSet) {
             String firstPinyin = PinYinUtil.getHeadPinYin(name);
             if (!contactMap.containsKey(firstPinyin)) {
-                ArrayList<String> tmpArray = new ArrayList<String>();
-                tmpArray.add(name);
+                ArrayList<UserVO> tmpArray = new ArrayList<UserVO>();
+                tmpArray.add(UserStorage.getInstance().getUser(name));
                 contactMap.put(firstPinyin, tmpArray);
             } else {
-                contactMap.get(firstPinyin).add(name);
+                contactMap.get(firstPinyin).add(UserStorage.getInstance().getUser(name));
             }
         }
     }
