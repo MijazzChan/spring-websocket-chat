@@ -1,5 +1,7 @@
 package com.zstu.mijazz.robots;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -18,6 +20,8 @@ import java.util.Map;
  */
 @Service
 public class CallRobotExternalApi {
+    private static Logger logger = LoggerFactory.getLogger(CallRobotExternalApi.class);
+
     public static final String ROBOT_API = "http://api.qingyunke.com/api.php?key=free&appid=0&msg={message}";
 
     public static final String ROBOT_DEAD_REPLY = "我脑子瓦特了, 晚点再来";
@@ -33,6 +37,7 @@ public class CallRobotExternalApi {
         Map<String, String> messageParams = new HashMap<>();
         messageParams.put("message", msgContent);
         RobotResponseObject response = restTemplate.getForObject(ROBOT_API, RobotResponseObject.class, messageParams);
+        logger.info("Robot");
         return "0".equals(response.result) ? response.getContent() : ROBOT_DEAD_REPLY;
     }
 

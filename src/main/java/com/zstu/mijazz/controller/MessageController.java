@@ -34,10 +34,6 @@ public class MessageController {
 
     @MessageMapping("/chat/{to}")
     public void sendMessage(@DestinationVariable String to, MessageFrom from) {
-        if ("ROBOT".equals(to)){
-            robotSendMessage(from);
-            return;
-        }
         logger.info("Handling imcoming message {} -> {}", from.getUserName() , to);
         boolean isExists = UserStorage.getInstance().isDuplicateUser(to);
         if (isExists) {
@@ -56,8 +52,16 @@ public class MessageController {
         return;
     }
 
+    @MessageMapping("/chat/ROBOT")
+    public void sendRobotMessage(MessageFrom from) {
+        logger.info("Handling incoming robot message from {}", from.getUserName());
+        robotSendMessage(from);
+        return;
+    }
+
     public void robotSendMessage(MessageFrom from) {
         String robotReply = callRobotExternalApi.getRobotReply(from.getMsgContent());
+        logger.info("Robot message callback {}", robotReply);
         simpMessagingTemplate.convertAndSend("/topic/messages/" + from.getUserName(), MessageTO.getRobotMessageTO(robotReply));
         return;
     }

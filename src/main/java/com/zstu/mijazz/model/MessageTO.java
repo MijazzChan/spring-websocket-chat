@@ -41,7 +41,7 @@ public class MessageTO implements Serializable {
 
     public static MessageTO getRobotMessageTO(String msgContent) {
         MessageTO messageTO = new MessageTO();
-        messageTO.setMsgType("0");
+        messageTO.setMsgType("1");
         messageTO.setMsgContent(msgContent);
         messageTO.setUserVO(UserVO.getRobotInstance());
         messageTO.setMsgTimeStamp(LocalDateTime.now());

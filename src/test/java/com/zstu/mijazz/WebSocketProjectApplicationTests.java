@@ -13,9 +13,6 @@ class WebSocketProjectApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void testRobot() {
-        System.out.println(new CallRobotExternalApi().getRobotReply("你是谁"));
-    }
+
 
 }

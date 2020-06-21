@@ -1,11 +1,15 @@
 package com.zstu.mijazz.controller;
 
+import com.zstu.mijazz.model.OrderedContactModel;
 import com.zstu.mijazz.model.ResponseModel;
+import com.zstu.mijazz.model.SystemTO;
 import com.zstu.mijazz.model.UserVO;
 import com.zstu.mijazz.storage.UserStorage;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +25,9 @@ import java.util.Set;
 @RestController
 @CrossOrigin()
 public class UsersController {
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     private static Logger logger = LoggerFactory.getLogger(UsersController.class);
 
@@ -42,13 +49,24 @@ public class UsersController {
         logger.info("Handling registration, userName-> {}", userName);
         UserVO userVO = new UserVO(userName, Integer.parseInt(userSex), httpServletRequest.getRemoteAddr(), avatarId);
         boolean isSuccess = UserStorage.getInstance().setUser(userName, userVO);
-        return new ResponseModel<>(isSuccess ? 1 : 0, userVO);
+        if (isSuccess) {
+            simpMessagingTemplate.convertAndSend("/topic/messages/system", new SystemTO("11", userName));
+            return new ResponseModel<>(1, userVO);
+        }else {
+            return new ResponseModel<>(0, userVO);
+        }
     }
 
     @ApiOperation(value = "用户列表", notes = "返回所有用户用户名的列表")
     @GetMapping("/fetchAllUsers")
     public Set<String> fetchAll() {
         return UserStorage.getInstance().getUsers();
+    }
+
+    @ApiOperation(value = "返回有序用户列表", notes = "带有拼音首字母的用户名列表, 缺省用#")
+    @GetMapping("/fetchAllUsersWithOrder")
+    public ResponseModel<OrderedContactModel> fetchWithOrder() {
+        return new ResponseModel<>(1, new OrderedContactModel());
     }
 
     @ApiOperation(value = "用户计数", notes = "返回计数")
@@ -87,6 +105,7 @@ public class UsersController {
         if (isUserExists) {
             UserStorage.getInstance().deleteUser(userName);
             logger.info("Handling Logout, userName-> {}", userName);
+            simpMessagingTemplate.convertAndSend("/topic/messages/system", new SystemTO("12", userName));
             return new ResponseModel<>(1, "Success");
         }else {
             return new ResponseModel<>(0, "Unexpected Failure");

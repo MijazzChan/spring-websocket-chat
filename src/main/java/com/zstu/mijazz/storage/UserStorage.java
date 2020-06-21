@@ -25,6 +25,11 @@ public class UserStorage {
         return instance;
     }
 
+    public static synchronized void delInstance() {
+        instance = null;
+        return;
+    }
+
     public Set<String> getUsers() {
         return userVOMap.keySet();
     }
@@ -34,6 +39,9 @@ public class UserStorage {
     }
 
     public boolean setUser(String userName, UserVO userVO) {
+        if (userName.contains("GROUP") || userName.contains("ROBOT")) {
+            return false;
+        }
         if (userVOMap.containsKey(userName)) {
             return false;
         }
