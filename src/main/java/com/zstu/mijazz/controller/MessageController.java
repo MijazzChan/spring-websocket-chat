@@ -10,7 +10,6 @@ import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,16 +32,13 @@ public class MessageController {
     @Autowired
     private CallRobotExternalApi callRobotExternalApi;
 
-    @Value("${lovechina.toggle}")
-    private boolean loveChina;
-
     @MessageMapping("/chat/{to}")
     public void sendMessage(@DestinationVariable String to, MessageFrom from) {
         logger.info("Handling imcoming message {} -> {}", from.getUserName() , to);
         boolean isExists = UserStorage.getInstance().isDuplicateUser(to);
         if (isExists) {
             logger.info("Successfully deliver message -> {}", to);
-            simpMessagingTemplate.convertAndSend("/topic/messages/" + to, new MessageTO(from, loveChina));
+            simpMessagingTemplate.convertAndSend("/topic/messages/" + to, new MessageTO(from));
         }else {
             logger.warn("Destination username {} not exist/online, check username", to);
         }
@@ -52,7 +48,7 @@ public class MessageController {
     @MessageMapping("/chat/GROUP")
     public void sendGroupMessage(MessageFrom from) {
         logger.info("Handling incoming group message {} -> GROUP", from.getUserName());
-        simpMessagingTemplate.convertAndSend("/topic/messages/GROUP", new MessageTO(from, loveChina));
+        simpMessagingTemplate.convertAndSend("/topic/messages/GROUP", new MessageTO(from));
         return;
     }
 
