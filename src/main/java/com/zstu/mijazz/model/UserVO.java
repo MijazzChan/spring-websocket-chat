@@ -41,11 +41,11 @@ public class UserVO implements Serializable, Comparable {
     }
 
     public static UserVO getGroupInstance() {
-        return new UserVO("GROUP", 1, "0.0.0.0", "5");
+        return new UserVO("GROUP", 1, "0.0.0.0", "4");
     }
 
     public static UserVO getRobotInstance(){
-        return new UserVO("ROBOT", 0, "0.0.0.0", "0");
+        return new UserVO("ROBOT", 0, "255.255.255.255", "5");
     }
 
     @Override

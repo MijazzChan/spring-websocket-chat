@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Api(hidden = true)
 public class TempController {
-    @GetMapping({"/help", "/"})
+    @GetMapping("/help")
     public String help() {
         return "redirect:/swagger-ui.html";
     }
