@@ -16,7 +16,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Created on 10-Jun-20.
  */
 @Configuration
-@EnableSwagger2
 public class Swagger2Configuration {
     public static final String SCAN_BASE = "com.zstu.mijazz";
 

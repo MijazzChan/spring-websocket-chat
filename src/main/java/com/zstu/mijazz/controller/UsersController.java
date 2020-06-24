@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,9 @@ public class UsersController {
                                           @RequestParam(value = "usersex", required = false, defaultValue = "1") String userSex,
                                           HttpServletRequest httpServletRequest) {
         logger.info("Handling registration, userName-> {}", userName);
+        if (StringUtils.isEmpty(userName) || userName.length() < 2) {
+            return new ResponseModel<>(0, null);
+        }
         UserVO userVO = new UserVO(userName, Integer.parseInt(userSex), httpServletRequest.getRemoteAddr(), avatarId);
         boolean isSuccess = UserStorage.getInstance().setUser(userName, userVO);
         if (isSuccess) {
